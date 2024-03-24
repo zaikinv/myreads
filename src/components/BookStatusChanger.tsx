@@ -1,8 +1,9 @@
 import { ChangeEvent } from 'react';
 import { BookRaw } from '../types/booksAPI.ts';
+import { shelves } from '../constants';
 
 interface BookShelfChangerProps {
-  onChange: (bookId: string, bookStatus: string) => void;
+  onChange: (bookId: string, targetShelfId: string) => void;
   book: BookRaw;
 }
 
@@ -17,13 +18,12 @@ const BookStatusChanger = ({ onChange, book }: BookShelfChangerProps) => {
         onChange={changeEventHandler}
         value={book.shelf ? book.shelf : 'none'}
       >
-        <option value="none" disabled>
-          Move to...
-        </option>
-        <option value="currentlyReading">Currently Reading</option>
-        <option value="wantToRead">Want to Read</option>
-        <option value="read">Read</option>
-        <option value="none">None</option>
+        <option disabled>Move to...</option>
+        {Object.values(shelves).map((option) => (
+          <option key={option.shelfName} value={option.shelfName}>
+            {option.shelfDisplayName}
+          </option>
+        ))}
       </select>
     </div>
   );

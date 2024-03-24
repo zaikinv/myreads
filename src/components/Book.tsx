@@ -1,18 +1,16 @@
 import BookCover from './BookCover.tsx';
 import BookStatusChanger from './BookStatusChanger.tsx';
-import { update } from '../BooksAPI';
 import { BookRaw } from '../types/booksAPI.ts';
 
 export interface BookComponentProps {
   book: BookRaw;
-  onBookChanged?: (book: BookRaw) => void;
+  onBookChanged?: (bookId: string, targetShelfId: string) => void;
 }
 
 const Book = ({ book, onBookChanged }: BookComponentProps) => {
-  const changeStatus = async (bookId: string, shelfId: string) => {
+  const changeStatus = async (bookId: string, targetShelfId: string) => {
     try {
-      await update({ id: bookId }, shelfId);
-      if (onBookChanged) onBookChanged(book);
+      if (onBookChanged) onBookChanged(bookId, targetShelfId);
     } catch (error) {
       console.log('error', error);
     }
@@ -30,7 +28,7 @@ const Book = ({ book, onBookChanged }: BookComponentProps) => {
         ></BookStatusChanger>
       </div>
       <div className="book-title">{book.title}</div>
-      <div className="book-authors">{book.authors}</div>
+      <div className="book-authors">{(book.authors || []).join(', ')}</div>
     </div>
   );
 };

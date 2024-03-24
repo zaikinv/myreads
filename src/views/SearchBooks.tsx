@@ -1,10 +1,12 @@
 import { Link } from 'react-router-dom';
 import BooksGrid from '../components/BooksGrid.tsx';
-import { get, getAll, search } from '../BooksAPI.ts';
-import { BookRaw, BooksRaw } from '../types/booksAPI.ts';
+import { getAll, search, update } from '../BooksAPI.ts';
+import { BooksRaw } from '../types/booksAPI.ts';
 import { CSSProperties, FormEvent, useEffect, useState } from 'react';
-import { replaceBookById } from '../utils';
-import { updateStatusIfFoundInBookshelf } from '../utils/transform.ts';
+import {
+  replaceBookById,
+  updateStatusIfFoundInBookshelf,
+} from '../utils/transform.ts';
 
 const styleNoBooksOverlay: CSSProperties = {
   display: 'flex',
@@ -34,7 +36,7 @@ const SearchBooks = () => {
       return;
     }
 
-    const books = await search(query, '10');
+    const books = await search(query.trim(), '10');
 
     if (books.error) {
       setBooks([]);
@@ -47,9 +49,14 @@ const SearchBooks = () => {
     }
   };
 
-  const updateBook = async (book: BookRaw) => {
-    const bookNew = await get(book.id);
-    setBooks((currentBooks) => replaceBookById(currentBooks, bookNew, book));
+  const updateBook = async (bookId: string, targetShelfId: string) => {
+    const bookNew = books.find((book) => book.id === bookId)!;
+
+    await update({ id: bookId }, targetShelfId);
+
+    setBooks((currentBooks) =>
+      replaceBookById(currentBooks, { ...bookNew, shelf: targetShelfId }),
+    );
   };
 
   useEffect(() => {

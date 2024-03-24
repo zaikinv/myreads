@@ -3,7 +3,7 @@ import Book from './Book.tsx';
 
 interface BookGridComponentProps {
   books?: BooksRaw;
-  onBookChanged?: (book: BookRaw) => void;
+  onBookChanged?: (bookId: string, targetShelfId: string) => void;
 }
 
 const BooksGrid = ({ books = [], onBookChanged }: BookGridComponentProps) => {
